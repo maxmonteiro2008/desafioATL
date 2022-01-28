@@ -9,7 +9,7 @@ desenvolvidas por todos os projetos da organização de modo que tais APIs possa
 descobertas e utilizadas pelos diversos times.
 
 ## Modelo
-![This is an image](https://myoctocat.com/assets/images/base-octocat.svg)
+![This is an image](https://github.com/maxmonteiro2008/desafioATL/tree/main/figs/)
 
 - API version: 1.0.0
 
