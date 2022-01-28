@@ -9,7 +9,7 @@ desenvolvidas por todos os projetos da organização de modo que tais APIs possa
 descobertas e utilizadas pelos diversos times.
 
 ## Modelo
-![This is the model](https://github.com/maxmonteiro2008/desafioATL/tree/main/figs/Model.jpg)
+![This is the model](./figs/Model.jpg)
 
 - API version: 1.0.0
 
