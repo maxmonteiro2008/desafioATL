@@ -9,12 +9,7 @@ desenvolvidas por todos os projetos da organização de modo que tais APIs possa
 descobertas e utilizadas pelos diversos times.
 
 ## Modelo
-
-===========                                         ====================
-Projeto                                                       Api
-===========   (1)------------------------------> (N)=====================
-
-[README](https://github.com/swagger-api/swagger-codegen/blob/master/README.md)
+![This is an image](https://myoctocat.com/assets/images/base-octocat.svg)
 
 - API version: 1.0.0
 
