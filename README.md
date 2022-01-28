@@ -2,7 +2,7 @@
 
 ## Go API Server for API Inventory
 
-**Objetivo
+**Objetivo**
 
 centralizar o cadastro de todas as APIs
 desenvolvidas por todos os projetos da organização de modo que tais APIs possam ser
