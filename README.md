@@ -21,7 +21,7 @@ descobertas e utilizadas pelos diversos times.
 - API version: 1.0.0
 [API SPec](./api/swagger.yalm)
 
-![This is the model](./figs/Api_doc.png)
+![This is the model](./figs/API_doc.png)
 
 
 
