@@ -158,7 +158,7 @@ func LoadDB(url, db, colec string) {
 
 }
 
-func inserProjecttDB(url, db, colec string, prj ProjectItem) {
+func inserProjecttDB(url, db, colec string, prj ProjectItem) bson.M {
 
 	// Set client options
 	//clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
@@ -179,26 +179,43 @@ func inserProjecttDB(url, db, colec string, prj ProjectItem) {
 	}
 
 	log.Printf("Connected to MongoDB!")
+
 	connection := client.Database(db).Collection(colec)
-	var prb bson.M = bson.M{
-		"Name":        "prj1",
-		"DisplayName": "Project_1",
-		"Description": " Projeto da equipe 1",
-		"CreateTime":  time.Now(),
+	var new_prj bson.M = bson.M{
+		"Name":        prj.Name,
+		"DisplayName": prj.DisplayName,
+		"Description": prj.Description,
+		"CreateTime":  prj.CreateTime,
 		"UpdateTime":  time.Now(),
-		"Apis":        []ApiItem{},
+		"Apis":        prj.Apis,
 	}
 
-	insertResult, err := connection.InsertOne(context.TODO(), prb)
+	//searche before insert
+	var filter bson.M
+	filter = bson.M{"Name": prj.Name}
+
+	filterCursor, err := connection.Find(context.TODO(), filter)
 	if err != nil {
 		log.Fatal(err)
 	}
+	var projectssFiltered []bson.M
+	if err = filterCursor.All(context.TODO(), &projectssFiltered); err != nil {
+		log.Fatal(err)
+	}
 
-	log.Printf("Inserted a single document: %v \n", insertResult.InsertedID)
+	if len(projectssFiltered) == 0 {
+		insertResult, err := connection.InsertOne(context.TODO(), new_prj)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		log.Printf("Inserted a single document: %v \n", insertResult.InsertedID)
+	}
+	return new_prj
 
 }
 
-func searchProjecttDB(url, db, colec, prjname, apiname string, prj ProjectItem, all bool) {
+func searchProjecttDB(url, db, colec, prjname, apiname string, prj ProjectItem, all bool) mongo.Cursor {
 
 	// Set client options
 	//clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
@@ -213,6 +230,8 @@ func searchProjecttDB(url, db, colec, prjname, apiname string, prj ProjectItem, 
 
 	// Check the connection
 	err = client.Ping(context.TODO(), nil)
+
+	var resp *mongo.Cursor
 
 	if err != nil {
 		log.Fatal(err)
@@ -230,7 +249,8 @@ func searchProjecttDB(url, db, colec, prjname, apiname string, prj ProjectItem, 
 		if err = cursor.All(context.TODO(), &projects); err != nil {
 			log.Fatal(err)
 		}
-
+		connection.Database().Client().Disconnect(context.TODO())
+		resp = cursor
 		log.Printf(" Projects: %v\n", projects)
 
 	} else {
@@ -246,14 +266,20 @@ func searchProjecttDB(url, db, colec, prjname, apiname string, prj ProjectItem, 
 		if err = filterCursor.All(context.TODO(), &projectssFiltered); err != nil {
 			log.Fatal(err)
 		}
+		resp = filterCursor
 
 		log.Printf(" ProjectsFiltered: %v\n", projectssFiltered)
+		connection.Database().Client().Disconnect(context.TODO())
+
 	}
 
-	connection.Database().Client().Disconnect(context.TODO())
+	return *resp
+
 }
 
-func deleteProjecttDB(url, db, colec, prjname, apiname string, prj ProjectItem) {
+//===================================================================================================================================
+
+func deleteProjecttDB(url, db, colec, prjname, apiname string, prj ProjectItem) bool {
 
 	clientOptions := options.Client().ApplyURI(url)
 
@@ -270,12 +296,38 @@ func deleteProjecttDB(url, db, colec, prjname, apiname string, prj ProjectItem) 
 	if err != nil {
 		log.Fatal(err)
 	}
+	connection := client.Database(db).Collection(colec)
+
+	//searche before delete
+	var filter bson.M
+	filter = bson.M{"Name": prj.Name}
+
+	filterCursor, err := connection.Find(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var projectssFiltered []bson.M
+	if err = filterCursor.All(context.TODO(), &projectssFiltered); err != nil {
+		log.Fatal(err)
+	}
+
+	if len(projectssFiltered) != 0 {
+		insertResult, err := connection.DeleteOne(context.TODO(), filter)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		log.Printf("Deleted a single document: %v \n", insertResult.DeletedCount)
+
+	}
 
 	log.Printf("Project Deleted")
+	connection.Database().Client().Disconnect(context.TODO())
+	return true
 
 }
 
-func updateProjecttDB(url, db, colec, prjname, apiname string, prj ProjectItem) {
+func updateProjecttDB(url, db, colec, prjname, apiname string, prj ProjectItem) bson.M {
 
 	// Set client options
 	//clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
@@ -295,7 +347,43 @@ func updateProjecttDB(url, db, colec, prjname, apiname string, prj ProjectItem) 
 		log.Fatal(err)
 	}
 
+	connection := client.Database(db).Collection(colec)
+
+	var new_prj bson.M = bson.M{
+		"Name":        prj.Name,
+		"DisplayName": prj.DisplayName,
+		"Description": prj.Description,
+		"CreateTime":  prj.CreateTime,
+		"UpdateTime":  time.Now(),
+		"Apis":        prj.Apis,
+	}
+
+	//searche before delete
+	var filter bson.M
+	filter = bson.M{"Name": prj.Name}
+
+	filterCursor, err := connection.Find(context.TODO(), filter)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var projectssFiltered []bson.M
+	if err = filterCursor.All(context.TODO(), &projectssFiltered); err != nil {
+		log.Fatal(err)
+	}
+
+	if len(projectssFiltered) != 0 {
+		insertResult, err := connection.UpdateOne(context.TODO(), filter, new_prj)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		log.Printf("Updated a single document: %v \n", insertResult.ModifiedCount)
+
+	}
+
 	log.Printf("Project Updated")
+	connection.Database().Client().Disconnect(context.TODO())
+	return new_prj
 
 }
 
@@ -504,7 +592,10 @@ func ProjectApiApinamePut(w http.ResponseWriter, r *http.Request) {
  */
 func SearchProjects(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	json.NewEncoder(w).Encode(projetos)
+	var p ProjectItem
+	prjs := searchProjecttDB(url, "Desafio", "Projects", "prj", "api", p, true)
+	//json.NewEncoder(w).Encode(projetos)
+	json.NewEncoder(w).Encode(prjs)
 	w.WriteHeader(http.StatusOK)
 }
 
