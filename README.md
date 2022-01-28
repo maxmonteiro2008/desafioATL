@@ -29,7 +29,8 @@ descobertas e utilizadas pelos diversos times.
 
 **Persistência de Dados**
 
-A persistência de dados escolhida foi o mongoDb![This is the model](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTy2dTk6BapuszAxMI9E1RFAh-Tzq29EJ0KyA&usqp=CAU)
+A persistência de dados escolhida foi o mongoDb
+![This is the model](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTy2dTk6BapuszAxMI9E1RFAh-Tzq29EJ0KyA&usqp=CAU)
 
 **Observação importante 1**
 
@@ -51,10 +52,13 @@ No entanto,apresento abaixo os artefatos sugeridos pela comunidade como suficien
 
 
 
+### Testes da Api
 
+O teste unitário foi criado com a Biblioteca Testfy ![Tutorial](https://codeburst.io/unit-testing-for-rest-apis-in-go-86c70dada52d)
 
+O artefato de de Teste unitário é o: [Unit Test File](./APITest.go)
 
-
+Caso a api tivesse sido abrigada em um host na nuvem, seria possível fazer testes com: ![external test]https://www.datadoghq.com/dg/apm/synthetics/api-test/
 
 ### Running the server
 Para rodar o servidor de API basta:
