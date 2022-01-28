@@ -1,0 +1,385 @@
+openapi: 3.0.1
+info:
+  title: API Inventory
+  description: This is the Challenge API
+  contact:
+    email: maxmonte.vix@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: https://virtserver.swaggerhub.com/Desafio/1.0.0
+  description: SwaggerHub API Auto Mocking
+tags:
+- name: admins
+  description: Secured Admin-only calls
+- name: developers
+  description: Operations available to regular developers
+
+paths:
+
+##############PROJETO
+  /project/:
+    get:
+      tags:
+      - developers
+      summary: searches projects
+      description: "passando o nome do projeto,recupera os dados do mesmo\n"
+      operationId: searchProjects
+      parameters:
+      - name: projecs
+        in: query
+        description: passa o nome do projeto a ser recuperado
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: pageLimit
+        in: query
+        description: numero de itens por página
+        required: false
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: numero máximo de itens retornados
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 50
+          minimum: 0
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Successful retreived
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectItem'
+                x-content-type: application/json
+        "400":
+          description: bad input parameter
+    post:
+      tags:
+      - developers
+      summary: adds a project item
+      description: Adds  project  item to the system
+      operationId: addProject
+      requestBody:
+        description: Project item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectItem'
+      responses:
+        "201":
+          description: item criado
+        "400":
+          description: "invalid input, object invalid"
+        "409":
+          description: an existing item already exists
+  /project/{projectname}:
+    get:
+      tags:
+      - developers
+      summary: searches  a specifc project
+      description: "passando o nome do projeto,recupera os dados do mesmo"
+      parameters:
+      - name: projectname
+        in: path
+        description: passa o nome do projeto a ser recuperado
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: string
+      responses:
+        "200":
+          description: Successful search
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectItem'
+        "400":
+          description: bad input parameter
+    put:
+      tags:
+      - developers
+      summary: updates a project item
+      description: updates  project  item
+      parameters:
+      - name: projectname
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: string
+      responses:
+        "200":
+          description: Successful search
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectItem'
+        "400":
+          description: bad input parameter
+    delete:
+      tags:
+      - developers
+      summary: deletes a project item
+      description: deletes a  project  item
+      parameters:
+      - name: projectname
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: string
+      responses:
+        "200":
+          description: Successful deleted
+        "400":
+          description: resource not found
+  /project/api/:
+    get:
+      tags:
+      - developers
+      summary: searches all apis
+      description: retrieve all apis
+      parameters:
+      - name: apis
+        in: query
+        description: passa o nome das apis a ser recuperado
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: pageLimit
+        in: query
+        description: numero de itens por página
+        required: false
+        style: form
+        explode: true
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+      - name: limit
+        in: query
+        description: numero máximo de itens retornados
+        required: false
+        style: form
+        explode: true
+        schema:
+          maximum: 50
+          minimum: 0
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: Successful search
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectItem'
+                x-content-type: application/json
+        "400":
+          description: bad input parameter
+    post:
+      tags:
+      - developers
+      summary: adds a api item
+      description: Adds  api  item into the system
+      operationId: addApi
+      requestBody:
+        description: Project item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApiItem'
+      responses:
+        "201":
+          description: api  recorded
+        "400":
+          description: "invalid input, object invalid"
+        "409":
+          description: an existing item already exists
+  /project/api/{apiname}:
+    get:
+      tags:
+      - developers
+      summary: searches  a specifc api
+      description: pass the api name to retreive a api
+      parameters:
+      - name: apiname
+        in: path
+        description: passa o nome do projeto a ser recuperado
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: string
+      responses:
+        "200":
+          description: Successful search
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectItem'
+        "400":
+          description: bad input parameter
+    put:
+      tags:
+      - developers
+      summary: updates a project item
+      description: updates  project  item
+      parameters:
+      - name: apiname
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: string
+      responses:
+        "200":
+          description: Successful search
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectItem'
+        "400":
+          description: bad input parameter
+    delete:
+      tags:
+      - developers
+      summary: deletes a api item
+      description: deletes a  api  item
+      parameters:
+      - name: apiname
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          minimum: 1
+          type: string
+      responses:
+        "200":
+          description: Successful deleted
+        "400":
+          description: resource not found
+
+#  =============== DATA =====================================
+
+components:
+  schemas:
+    ProjectItem:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          example: projeto_1
+        display_name:
+          type: string
+          example: projeto_1-detail
+        description:
+          type: string
+          example: descricao do projeto
+        create_time:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33.001Z
+        update_time:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33.001Z
+        apis:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiItem'
+      example:
+        update_time: 2016-08-29T09:12:33.001Z
+        create_time: 2016-08-29T09:12:33.001Z
+        apis:
+        - update_time: 2016-08-29T09:12:33.001Z
+          openapi_file: ""
+          create_time: 2016-08-29T09:12:33.001Z
+          name: ACME Corporation
+          description: API para teste
+          project: project
+          display_name: https://www.acme-corp.com
+        - update_time: 2016-08-29T09:12:33.001Z
+          openapi_file: ""
+          create_time: 2016-08-29T09:12:33.001Z
+          name: ACME Corporation
+          description: API para teste
+          project: project
+          display_name: https://www.acme-corp.com
+        name: projeto_1
+        description: descricao do projeto
+        display_name: projeto_1-detail
+    ApiItem:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+          description: API name
+          example: ACME Corporation
+        display_name:
+          type: string
+          description: API huma-readable name
+          example: https://www.acme-corp.com
+        description:
+          type: string
+          description: API detailed description
+          example: API para teste
+        create_time:
+          type: string
+          description: API  creation time stamp
+          format: date-time
+          example: 2016-08-29T09:12:33.001Z
+        update_time:
+          type: string
+          description: API update time stamo
+          format: date-time
+          example: 2016-08-29T09:12:33.001Z
+        openapi_file:
+          type: string
+          description: openApi file name
+          format: byte
+        project:
+          type: string
+          description: project name
+      example:
+        update_time: 2016-08-29T09:12:33.001Z
+        openapi_file: ""
+        create_time: 2016-08-29T09:12:33.001Z
+        name: ACME Corporation
+        description: API para teste
+        project: project
+        display_name: https://www.acme-corp.com
